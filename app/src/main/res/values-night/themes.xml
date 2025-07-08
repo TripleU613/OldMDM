@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      The parent theme has been changed to "Theme.AppCompat.DayNight.NoActionBar".
+      This theme is compatible with AppCompatActivity and will fix the crash.
+    -->
+    <style name="Theme.Oldmdm" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!--
+            Customize your dark theme here.
+            For example, you can set the primary color of your app.
+        -->
+        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    </style>
+</resources>

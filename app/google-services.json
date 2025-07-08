@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "592644479190",
+    "project_id": "oldmdm",
+    "storage_bucket": "oldmdm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592644479190:android:50c8d59aed9c7781909177",
+        "android_client_info": {
+          "package_name": "com.tripleu.oldmdm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMjVDgKkHtIIL-7oLJrdg_pqokUQ6hRAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
