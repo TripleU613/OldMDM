@@ -3,14 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/mdm_background_blue"
     android:padding="16dp"
     tools:context="com.android.cts.tripleu.oldmdm.MainActivity">
 
-    <!--
-      This ScrollView is the key to supporting small screens.
-      It allows the user to scroll through the content using the D-Pad
-      if the list of switches doesn't fit on the screen.
-    -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,20 +33,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Device Owner Required"
-                    android:textSize="20sp"
+                    android:text="@string/device_owner_required"
+                    android:textColor="@color/mdm_text_white"
+                    android:textSize="26sp"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/setup_instructions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:gravity="center"
-                    android:text="To use this app, grant Device Owner permission..."
+                    android:text="@string/to_use_this_app_grant_device_owner_permission"
+                    android:textColor="@color/mdm_text_white"
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- Group for when MDM is ready to be activated (NOW WITH SWITCHES) -->
+            <!-- Group for when MDM is ready to be activated -->
             <LinearLayout
                 android:id="@+id/activate_view"
                 android:layout_width="match_parent"
@@ -62,7 +61,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Filter Configuration"
+                    android:gravity="center"
+                    android:text="@string/filter_configuration"
+                    android:textColor="@color/mdm_text_white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -71,7 +72,10 @@
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Block Browsers"
+                    android:fontFamily="@font/press_start_2p"
+                    android:text="@string/block_browsers"
+                    android:textColor="@color/mdm_text_white"
+                    android:theme="@style/MDMSwitch"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                 <Switch
@@ -79,7 +83,10 @@
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Block Email"
+                    android:fontFamily="@font/press_start_2p"
+                    android:text="@string/block_email"
+                    android:textColor="@color/mdm_text_white"
+                    android:theme="@style/MDMSwitch"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                 <Switch
@@ -87,7 +94,10 @@
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Block Texting"
+                    android:fontFamily="@font/press_start_2p"
+                    android:text="@string/block_texting"
+                    android:textColor="@color/mdm_text_white"
+                    android:theme="@style/MDMSwitch"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                 <Switch
@@ -95,7 +105,10 @@
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Block FM Radio"
+                    android:fontFamily="@font/press_start_2p"
+                    android:text="@string/block_fm_radio"
+                    android:textColor="@color/mdm_text_white"
+                    android:theme="@style/MDMSwitch"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                 <Switch
@@ -103,7 +116,10 @@
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Block Video Player"
+                    android:fontFamily="@font/press_start_2p"
+                    android:text="@string/block_video"
+                    android:textColor="@color/mdm_text_white"
+                    android:theme="@style/MDMSwitch"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                 <Switch
@@ -111,8 +127,11 @@
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Block Camera"
+                    android:fontFamily="@font/press_start_2p"
                     android:nextFocusDown="@id/btn_activate_filter"
+                    android:text="@string/block_camera"
+                    android:textColor="@color/mdm_text_white"
+                    android:theme="@style/MDMSwitch"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                 <Button
@@ -120,10 +139,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
+                    android:backgroundTint="@color/mdm_button_blue"
                     android:focusable="true"
+                    android:fontFamily="@font/press_start_2p"
                     android:nextFocusUp="@id/switch_camera"
-                    android:text="Activate Filter" />
-
+                    android:text="@string/activate_filter"
+                    android:textColor="@color/mdm_text_white" />
             </LinearLayout>
 
             <!-- Group for when MDM is active and can be deactivated -->
@@ -138,37 +159,61 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Enter PIN to Uninstall"
-                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:text="@string/enter_pin_to_uninstall"
+                    android:textColor="@color/mdm_text_white"
+                    android:textSize="26sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_device_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/mdm_text_grey"
+                    android:textSize="12sp"
+                    tools:text="Device ID: 12345-ABCDE" />
+
                 <TextView
                     android:id="@+id/pin_status_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Connecting..."
+                    android:text="@string/connecting"
+                    android:textColor="@color/mdm_text_grey"
                     android:textSize="12sp" />
+
                 <EditText
                     android:id="@+id/et_pin_entry"
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:autofillHints=""
+                    android:backgroundTint="@color/mdm_accent_cyan"
                     android:focusable="true"
+                    android:fontFamily="@font/press_start_2p"
                     android:gravity="center"
-                    android:hint="------"
+                    android:hint="-------"
                     android:inputType="numberPassword"
-                    android:maxLength="6"
-                    android:nextFocusDown="@id/btn_deactivate" />
+                    android:maxLength="7"
+                    android:nextFocusDown="@id/btn_deactivate"
+                    android:textColor="@color/mdm_text_white"
+                    android:textColorHint="@color/mdm_text_grey"
+                    tools:ignore="HardcodedText" />
+
                 <Button
                     android:id="@+id/btn_deactivate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:backgroundTint="@color/mdm_button_blue"
                     android:focusable="true"
+                    android:fontFamily="@font/press_start_2p"
                     android:nextFocusUp="@id/et_pin_entry"
-                    android:text="Deactivate and Uninstall" />
+                    android:text="@string/deactivate"
+                    android:textColor="@color/mdm_text_white"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 
@@ -180,8 +225,9 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="© 2025 TripleUTech\nHead to tripleu.org for donations and contact."
-        android:textColor="#888888"
-        android:textSize="10sp" />
+        android:text="@string/_2025_tripleutech_nhead_to_tripleu_org_for_donations_and_contact"
+        android:textColor="@color/mdm_text_grey"
+        android:textSize="10sp"
+        tools:ignore="SmallSp" />
 
 </RelativeLayout>

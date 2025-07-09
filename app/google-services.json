@@ -28,7 +28,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:592644479190:android:bb5d32f6ecf90e48909177",
         "android_client_info": {
-          "package_name": "com.android.cts.tripleu.oldmdmd"
+          "package_name": "com.android.cts.tripleu.oldmdm"
         }
       },
       "oauth_client": [],

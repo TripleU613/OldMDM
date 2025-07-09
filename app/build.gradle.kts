@@ -58,7 +58,7 @@ android {
 dependencies {
     // Add this line for AppCompat
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation(libs.androidx.core.ktx)

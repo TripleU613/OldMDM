@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--
-      The parent theme has been changed to "Theme.AppCompat.DayNight.NoActionBar".
-      This theme is compatible with AppCompatActivity and will fix the crash.
+      Base application theme.
+      Changed parent from Material3 to AppCompat to ensure compatibility.
     -->
-    <style name="Theme.Oldmdm" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!--
-            Customize your dark theme here.
-            For example, you can set the primary color of your app.
-        -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Base.Theme.Oldmdm" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.Oldmdm" parent="Base.Theme.Oldmdm" />
+
+    <!-- Custom Style for the Switches -->
+    <style name="MDMSwitch" parent="Theme.AppCompat.Light">
+        <!-- colorPrimary is used for the activated thumb -->
+        <item name="colorPrimary">@color/mdm_accent_cyan</item>
+        <!-- colorControlNormal is used for the inactive thumb -->
+        <item name="colorControlNormal">@color/mdm_text_grey</item>
+        <!-- colorAccent is used for the activated track -->
+        <item name="colorAccent">@color/mdm_accent_cyan</item>
+    </style>
+
 </resources>

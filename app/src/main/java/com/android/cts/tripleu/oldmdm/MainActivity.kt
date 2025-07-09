@@ -1,14 +1,18 @@
 package com.android.cts.tripleu.oldmdm
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.admin.DevicePolicyManager
 import android.app.admin.SystemUpdatePolicy
 import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.os.UserManager
+import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -18,6 +22,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import com.google.firebase.auth.FirebaseAuth
@@ -25,8 +31,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-
-// --- FIX: Added the missing import for the R class ---
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
@@ -35,6 +43,9 @@ class MainActivity : AppCompatActivity() {
     private val PREFS_FILENAME = "mdm_prefs"
     private val KEY_IS_ACTIVE = "is_active"
     private val KEY_BLOCKED_PACKAGES = "blocked_packages"
+    private val KEY_DEVICE_ID = "device_id"
+    private val KEY_ACTIVATION_DATE = "activation_date" // New key for storing the date
+    private val PERMISSION_REQUEST_CODE = 101
 
     private lateinit var dpm: DevicePolicyManager
     private lateinit var adminComponent: ComponentName
@@ -53,6 +64,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnDeactivate: Button
     private lateinit var etPinEntry: EditText
     private lateinit var tvPinStatus: TextView
+    private lateinit var tvDeviceId: TextView
 
     // Switches
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -93,10 +105,7 @@ class MainActivity : AppCompatActivity() {
         updateUiState()
 
         btnActivate.setOnClickListener {
-            Toast.makeText(this, "MDM Activated.", Toast.LENGTH_LONG).show()
-            applyAllRestrictions(true)
-            prefs.edit { putBoolean(KEY_IS_ACTIVE, true) }
-            finish()
+            handleActivation()
         }
 
         btnDeactivate.setOnClickListener {
@@ -113,14 +122,112 @@ class MainActivity : AppCompatActivity() {
         btnDeactivate = findViewById(R.id.btn_deactivate)
         etPinEntry = findViewById(R.id.et_pin_entry)
         tvPinStatus = findViewById(R.id.pin_status_view)
+        tvDeviceId = findViewById(R.id.tv_device_id)
 
-        // Initialize switches
         switchBrowser = findViewById(R.id.switch_browser)
         switchEmail = findViewById(R.id.switch_email)
         switchTexting = findViewById(R.id.switch_texting)
         switchRadio = findViewById(R.id.switch_radio)
         switchVideo = findViewById(R.id.switch_video)
         switchCamera = findViewById(R.id.switch_camera)
+    }
+
+    private fun handleActivation() {
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "Activation requires an internet connection.", Toast.LENGTH_LONG).show()
+            return
+        }
+        ensureAuthThenProceedWithRegistration()
+    }
+
+    private fun ensureAuthThenProceedWithRegistration() {
+        if (auth.currentUser != null) {
+            checkPhonePermissionAndRegister()
+        } else {
+            auth.signInAnonymously().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    checkPhonePermissionAndRegister()
+                } else {
+                    Log.w(TAG, "Anonymous sign-in failed", task.exception)
+                    Toast.makeText(this, "Authentication failed. Cannot register device.", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun checkPhonePermissionAndRegister() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), PERMISSION_REQUEST_CODE)
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                registerDevice()
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    registerDevice()
+                }
+            } else {
+                Toast.makeText(this, "Phone permission is required to register the device.", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    @SuppressLint("HardwareIds")
+    private fun registerDevice() {
+        val telephonyManager = getSystemService(TELEPHONY_SERVICE) as TelephonyManager
+
+        val imei = if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            telephonyManager.deviceId ?: "Not Available"
+        } else "Permission Denied"
+
+        val phoneNumber = if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            telephonyManager.line1Number ?: "Not Available"
+        } else "Permission Denied"
+
+        val deviceModel = Build.MODEL
+        val activationDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date())
+        val deviceId = UUID.randomUUID().toString().substring(0, 13)
+
+        val deviceData = hashMapOf(
+            "deviceId" to deviceId,
+            "imei" to imei,
+            "model" to deviceModel,
+            "phoneNumber" to phoneNumber,
+            "activationDate" to activationDate
+        )
+
+        db.collection("registered_devices").document(deviceId)
+            .set(deviceData)
+            .addOnSuccessListener {
+                Log.d(TAG, "Device successfully registered in Firebase.")
+                // Save the generated ID and the full activation date
+                prefs.edit {
+                    putString(KEY_DEVICE_ID, deviceId)
+                        .putString(KEY_ACTIVATION_DATE, activationDate) // Save the activation date
+                }
+
+                Toast.makeText(this, "MDM Activated.", Toast.LENGTH_LONG).show()
+                applyAllRestrictions(true)
+                prefs.edit { putBoolean(KEY_IS_ACTIVE, true) }
+                finish()
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error registering device", e)
+                Toast.makeText(this, "Failed to register device. Please try again.", Toast.LENGTH_LONG).show()
+            }
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 
     private fun setupSwitchListeners() {
@@ -156,6 +263,8 @@ class MainActivity : AppCompatActivity() {
                 setupView.visibility = View.GONE
                 activateView.visibility = View.GONE
                 deactivateView.visibility = View.VISIBLE
+                val deviceId = prefs.getString(KEY_DEVICE_ID, "Not Registered")
+                tvDeviceId.text = "Device ID: $deviceId"
                 signInAndListenForPin()
             } else {
                 setupView.visibility = View.GONE
@@ -187,23 +296,32 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun checkPinForDeactivation() {
-        if (etPinEntry.text.toString() == currentOnlinePin) {
-            Toast.makeText(this, "Deactivating MDM...", Toast.LENGTH_LONG).show()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        val enteredPin = etPinEntry.text.toString()
+        val activationDate = prefs.getString(KEY_ACTIVATION_DATE, null)
+
+        if (currentOnlinePin != null && activationDate != null && activationDate.length >= 19) {
+            // Get the last digit of the seconds (e.g., from "22:17:57", get "7")
+            val lastSecondDigit = activationDate.substring(18, 19)
+            val correctPin = "$currentOnlinePin$lastSecondDigit"
+
+            if (enteredPin == correctPin) {
+                Toast.makeText(this, "Deactivating MDM...", Toast.LENGTH_LONG).show()
                 applyAllRestrictions(false)
+                prefs.edit { clear() } // Clear all preferences on deactivation
+                try { dpm.clearDeviceOwnerApp(packageName) } catch (e: SecurityException) { Log.e(TAG, "Failed to clear owner", e) }
+                startActivity(Intent(Intent.ACTION_DELETE, "package:$packageName".toUri()))
+            } else {
+                Toast.makeText(this, "Incorrect PIN", Toast.LENGTH_SHORT).show()
             }
-            prefs.edit {putBoolean(KEY_IS_ACTIVE, false)}
-            try { dpm.clearDeviceOwnerApp(packageName) } catch (e: SecurityException) { Log.e(TAG, "Failed to clear owner", e) }
-            startActivity(Intent(Intent.ACTION_DELETE, "package:$packageName".toUri()))
         } else {
-            Toast.makeText(this, "Incorrect PIN", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Error: Could not verify PIN. Check connection and activation data.", Toast.LENGTH_LONG).show()
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun applyAllRestrictions(enable: Boolean) {
-        // Apply general restrictions
         val restrictions = listOf(
             UserManager.DISALLOW_ADD_USER, UserManager.DISALLOW_FACTORY_RESET,
             UserManager.DISALLOW_DEBUGGING_FEATURES, UserManager.DISALLOW_INSTALL_APPS,
@@ -214,11 +332,9 @@ class MainActivity : AppCompatActivity() {
             else dpm.clearUserRestriction(adminComponent, restriction)
         }
 
-        // System Update Policy
         val policy = if (enable) SystemUpdatePolicy.createWindowedInstallPolicy(120, 180) else null
         dpm.setSystemUpdatePolicy(adminComponent, policy)
 
-        // Apply app-specific restrictions based on switches
         val packagesToBlock = mutableSetOf<String>()
         if (enable) {
             if (switchBrowser.isChecked) packagesToBlock.addAll(browserPackages)
@@ -236,7 +352,6 @@ class MainActivity : AppCompatActivity() {
             }
             prefs.edit { putStringSet(KEY_BLOCKED_PACKAGES, successfullyBlocked) }
         } else {
-            // Re-enable only the apps that were successfully blocked
             val blockedPackages = prefs.getStringSet(KEY_BLOCKED_PACKAGES, emptySet())
             blockedPackages?.forEach { pkg -> setAppEnabled(pkg, true) }
             prefs.edit { remove(KEY_BLOCKED_PACKAGES) }

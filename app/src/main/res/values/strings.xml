@@ -1,12 +1,18 @@
 <resources>
-    <string name="app_name">OldMDM</string>
-    <string name="_2025_tripleutech_nhead_to_tripleu_org_for_donations_and_contact">© 2025 TripleUTech\nHead to tripleu.org for donations and contact.</string>
-    <string name="deactivate_and_uninstall">Deactivate and Uninstall</string>
+
+    <string name="device_owner_required">Device Owner Required</string>
+    <string name="to_use_this_app_grant_device_owner_permission">To use this app, grant Device Owner permission...</string>
+    <string name="filter_configuration">Filter Configuration</string>
+    <string name="block_browsers">Block Browsers</string>
+    <string name="block_email">Block Email</string>
+    <string name="block_texting">Block Texting</string>
+    <string name="block_fm_radio">Block FM Radio</string>
+    <string name="block_video">Block Video</string>
+    <string name="block_camera">Block Camera</string>
+    <string name="enter_pin_to_uninstall">Enter PIN to Uninstall</string>
     <string name="connecting">Connecting...</string>
     <string name="activate_filter">Activate Filter</string>
-    <string name="enter_pin_to_uninstall">Enter PIN to Uninstall</string>
-    <string name="device_owner_required">Device Owner Required</string>
-    <string name="to_use_this_app_grant_device_owner_permission_via_adb_on_a_factory_reset_device">To use this app, grant Device Owner permission via ADB on a factory-reset device.</string>
-    <string name="mdm_ready">MDM Ready</string>
-    <string name="lines">------</string>
+    <string name="deactivate">Deactivate</string>
+    <string name="_2025_tripleutech_nhead_to_tripleu_org_for_donations_and_contact">© 2025 TripleUTech\nHead to tripleu.org for donations and contact.</string>
+    <string name="app_name">OldMDM</string>
 </resources>
