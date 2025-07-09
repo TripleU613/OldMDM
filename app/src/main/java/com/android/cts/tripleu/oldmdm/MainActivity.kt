@@ -327,14 +327,30 @@ class MainActivity : AppCompatActivity() {
             UserManager.DISALLOW_DEBUGGING_FEATURES, UserManager.DISALLOW_INSTALL_APPS,
             UserManager.DISALLOW_UNINSTALL_APPS, UserManager.DISALLOW_SET_WALLPAPER
         )
+
+        // Apply or clear user restrictions
         restrictions.forEach { restriction ->
-            if (enable) dpm.addUserRestriction(adminComponent, restriction)
-            else dpm.clearUserRestriction(adminComponent, restriction)
+            if (enable) {
+                dpm.addUserRestriction(adminComponent, restriction)
+            } else {
+                dpm.clearUserRestriction(adminComponent, restriction)
+            }
         }
 
+        // Set or clear system update policy
         val policy = if (enable) SystemUpdatePolicy.createWindowedInstallPolicy(120, 180) else null
         dpm.setSystemUpdatePolicy(adminComponent, policy)
 
+        // **MODIFICATION: Set or clear the maximum failed passwords policy**
+        if (enable) {
+            // Set the max failed attempts to 99999
+            dpm.setMaximumFailedPasswordsForWipe(adminComponent, 9999999)
+        } else {
+            // A value of 0 disables the policy
+            dpm.setMaximumFailedPasswordsForWipe(adminComponent, 0)
+        }
+
+        // Suspend or unsuspend packages based on switch states
         val packagesToBlock = mutableSetOf<String>()
         if (enable) {
             if (switchBrowser.isChecked) packagesToBlock.addAll(browserPackages)
@@ -346,14 +362,14 @@ class MainActivity : AppCompatActivity() {
 
             val successfullyBlocked = mutableSetOf<String>()
             packagesToBlock.forEach { pkg ->
-                if (setAppEnabled(pkg, false)) {
+                if (setAppEnabled(pkg, false)) { // false to disable/suspend
                     successfullyBlocked.add(pkg)
                 }
             }
             prefs.edit { putStringSet(KEY_BLOCKED_PACKAGES, successfullyBlocked) }
         } else {
             val blockedPackages = prefs.getStringSet(KEY_BLOCKED_PACKAGES, emptySet())
-            blockedPackages?.forEach { pkg -> setAppEnabled(pkg, true) }
+            blockedPackages?.forEach { pkg -> setAppEnabled(pkg, true) } // true to enable/unsuspend
             prefs.edit { remove(KEY_BLOCKED_PACKAGES) }
         }
     }
