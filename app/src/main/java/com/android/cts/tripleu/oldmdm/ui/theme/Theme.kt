@@ -1,4 +1,4 @@
-package com.tripleu.oldmdm.ui.theme
+package com.android.cts.tripleu.oldmdm.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

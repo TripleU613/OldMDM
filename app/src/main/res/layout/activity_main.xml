@@ -4,9 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".MainActivity">
+    tools:context="com.android.cts.tripleu.oldmdm.MainActivity">
 
-    <!-- ScrollView makes the content accessible on small screens -->
+    <!--
+      This ScrollView is the key to supporting small screens.
+      It allows the user to scroll through the content using the D-Pad
+      if the list of switches doesn't fit on the screen.
+    -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -33,44 +37,93 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/device_owner_required"
+                    android:text="Device Owner Required"
                     android:textSize="20sp"
                     android:textStyle="bold" />
-
                 <TextView
                     android:id="@+id/setup_instructions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:gravity="center"
-                    android:text="@string/to_use_this_app_grant_device_owner_permission_via_adb_on_a_factory_reset_device"
+                    android:text="To use this app, grant Device Owner permission..."
                     android:textSize="14sp" />
-
             </LinearLayout>
 
-            <!-- Group for when MDM is ready to be activated -->
+            <!-- Group for when MDM is ready to be activated (NOW WITH SWITCHES) -->
             <LinearLayout
                 android:id="@+id/activate_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/mdm_ready"
+                    android:text="Filter Configuration"
                     android:textSize="20sp"
                     android:textStyle="bold" />
+
+                <Switch
+                    android:id="@+id/switch_browser"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Block Browsers"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <Switch
+                    android:id="@+id/switch_email"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Block Email"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <Switch
+                    android:id="@+id/switch_texting"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Block Texting"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <Switch
+                    android:id="@+id/switch_radio"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Block FM Radio"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <Switch
+                    android:id="@+id/switch_video"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Block Video Player"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <Switch
+                    android:id="@+id/switch_camera"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Block Camera"
+                    android:nextFocusDown="@id/btn_activate_filter"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                 <Button
                     android:id="@+id/btn_activate_filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="24dp"
                     android:focusable="true"
-                    android:text="@string/activate_filter" />
+                    android:nextFocusUp="@id/switch_camera"
+                    android:text="Activate Filter" />
+
             </LinearLayout>
 
             <!-- Group for when MDM is active and can be deactivated -->
@@ -85,32 +138,27 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/enter_pin_to_uninstall"
+                    android:text="Enter PIN to Uninstall"
                     android:textSize="20sp"
                     android:textStyle="bold" />
-
                 <TextView
                     android:id="@+id/pin_status_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/connecting"
-                    android:textSize="12sp"
-                    tools:ignore="HardcodedText" />
-
+                    android:text="Connecting..."
+                    android:textSize="12sp" />
                 <EditText
                     android:id="@+id/et_pin_entry"
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:autofillHints=""
                     android:focusable="true"
                     android:gravity="center"
-                    android:hint="@string/lines"
+                    android:hint="------"
                     android:inputType="numberPassword"
                     android:maxLength="6"
                     android:nextFocusDown="@id/btn_deactivate" />
-
                 <Button
                     android:id="@+id/btn_deactivate"
                     android:layout_width="wrap_content"
@@ -118,7 +166,7 @@
                     android:layout_marginTop="16dp"
                     android:focusable="true"
                     android:nextFocusUp="@id/et_pin_entry"
-                    android:text="@string/deactivate_and_uninstall" />
+                    android:text="Deactivate and Uninstall" />
             </LinearLayout>
 
         </LinearLayout>
@@ -132,9 +180,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="@string/_2025_tripleutech_nhead_to_tripleu_org_for_donations_and_contact"
+        android:text="© 2025 TripleUTech\nHead to tripleu.org for donations and contact."
         android:textColor="#888888"
-        android:textSize="10sp"
-        tools:ignore="SmallSp" />
+        android:textSize="10sp" />
 
 </RelativeLayout>

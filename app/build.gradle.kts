@@ -14,11 +14,11 @@ android {
             keyPassword = "changeit"
         }
     }
-    namespace = "com.tripleu.oldmdm"
+    namespace = "com.android.cts.tripleu.oldmdm"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.tripleu.oldmdm"
+        applicationId = "com.android.cts.tripleu.oldmdm"
         minSdk = 23
         targetSdk = 36
         versionCode = 1
@@ -58,15 +58,9 @@ android {
 dependencies {
     // Add this line for AppCompat
     implementation("androidx.appcompat:appcompat:1.7.1")
-
-    // Firebase Bill of Materials (BoM) - This manages library versions
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
-
-    // Add the dependencies for Firebase products you want to use
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
-
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -75,6 +69,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.config)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

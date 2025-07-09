@@ -1,4 +1,4 @@
-package com.tripleu.oldmdm
+package com.android.cts.tripleu.oldmdm
 
 import android.app.admin.DeviceAdminReceiver
 import android.content.Context

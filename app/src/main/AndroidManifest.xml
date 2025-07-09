@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tripleu.oldmdm">
+    package="com.android.cts.tripleu.oldmdm">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -13,7 +13,7 @@
         android:theme="@style/Theme.AppCompat.DayNight">
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.android.cts.tripleu.oldmdm.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
@@ -23,7 +23,7 @@
         </activity>
 
         <receiver
-            android:name=".MyDeviceAdminReceiver"
+            android:name="com.android.cts.tripleu.oldmdm.MyDeviceAdminReceiver"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_DEVICE_ADMIN"
             android:exported="true">

@@ -7,6 +7,44 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:592644479190:android:4c752c709d1c55c2909177",
+        "android_client_info": {
+          "package_name": "com.android.cts.tripleu.oldmdm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMjVDgKkHtIIL-7oLJrdg_pqokUQ6hRAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592644479190:android:bb5d32f6ecf90e48909177",
+        "android_client_info": {
+          "package_name": "com.android.cts.tripleu.oldmdmd"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMjVDgKkHtIIL-7oLJrdg_pqokUQ6hRAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:592644479190:android:50c8d59aed9c7781909177",
         "android_client_info": {
           "package_name": "com.tripleu.oldmdm"
